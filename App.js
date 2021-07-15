@@ -60,6 +60,8 @@ const App = () => {
             labelStyle: {fontSize: 14},
             activeTintColor: 'black',
             activeBackgroundColor: 'gold',
+            keyboardHidesTabBar: 'true',
+            showLabel: false
           }}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {

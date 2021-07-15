@@ -62,14 +62,14 @@ export default StyleSheet.create({
 
   //blogpost Style    <<<
   blogpostHeroContainer: {
-    backgroundColor: 'red',
+    backgroundColor: 'white',
     height: 350,
     width:350,
     margin: 4,
   },
   blogpostHeroImage: {
     height: '100%',
-    backgroundColor: 'blue',
+    backgroundColor: 'gold',
     justifyContent: 'flex-end',
   },
   blogpostTextContainer: {

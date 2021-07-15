@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 import GlobalStyle from '../utilities/GlobalStyle';
 import BlogPostHero from '../components/BlogPostHero';
@@ -16,6 +17,8 @@ const Dashboard = ({route, navigation}) => {
   const userAuthData = route.params;
 
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [loading3, setLoading3] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
   const [userData, setUserData] = useState('');
   const [latestBlogPost, setLatestBlogPost] = useState([]);
@@ -49,9 +52,9 @@ const Dashboard = ({route, navigation}) => {
       // Stop listening for updates when no longer required
       return () => {
         subscriber();
-        console.log(subscriber());
       };
     }, []);
+
     useEffect(() => {
       const subscriber = firestore()
         .collection('BlogData')
@@ -59,22 +62,23 @@ const Dashboard = ({route, navigation}) => {
         .collection('BlogPostData')
         .orderBy('postCreated', 'desc')
         .limit(10)
-        .onSnapshot(docs => {
-          // console.log(TAG, 'document: ', docs);
+        .onSnapshot(async docs => {
           let newPostArray = [];
-          docs.forEach(async documentSnapshot => {
-            // console.log(TAG, 'document: ', documentSnapshot.data());
-            let blogPostData = documentSnapshot.data();
-            blogPostData.postID = documentSnapshot.id;
+          for(const doc of docs.docs){
+            let blogPostData = doc.data();
+            blogPostData.postID = doc.id;
+            const url = await storage().ref(blogPostData.postImageURI).getDownloadURL();
+            blogPostData.postStorageURL = url
             newPostArray.push(blogPostData);
-          });
+          }
           setLatestBlogPost(newPostArray);
-          // setLoading(false);
+          setLoading2(false)
         });
       return () => {
         subscriber();
       };
     }, []);
+
     useEffect(() => {
       const subscriber = firestore()
         .collection('BlogData')
@@ -82,17 +86,19 @@ const Dashboard = ({route, navigation}) => {
         .collection('BlogPostData')
         .orderBy('postViews', 'desc')
         .limit(20)
-        .onSnapshot(docs => {
+        .onSnapshot(async docs => {
           // console.log(TAG, 'document: ', docs);
           let newPostArray = [];
-          docs.forEach(async documentSnapshot => {
-            // console.log(TAG, 'document: ', documentSnapshot.data());
-            let blogPostData = documentSnapshot.data();
-            blogPostData.postID = documentSnapshot.id;
+          for(const doc of docs.docs){
+            let blogPostData = doc.data();
+            blogPostData.postID = doc.id;
+            const url = await storage().ref(blogPostData.postImageURI).getDownloadURL();
+            blogPostData.postStorageURL = url
             newPostArray.push(blogPostData);
-          });
+          }
           setPopularBlogPost(newPostArray);
-          // setLoading(false);
+          setLoading3(false)
+
         });
       return () => {
         subscriber();
@@ -123,9 +129,10 @@ const Dashboard = ({route, navigation}) => {
 
   getUserData(userAuthData.uid);
   // setUserData(getUserData(userAuthData.uid))
-  console.log(TAG, 'is new user: ', isNewUser);
-  console.log(TAG, 'latest Blogpost: ', latestBlogPost);
-  console.log(TAG, 'popular Blogpost: ', popularBlogPost);
+  // console.log(TAG, 'is new user: ', isNewUser);
+  // console.log(TAG, 'latest Blogpost: ', latestBlogPost);
+  // console.log(TAG, 'popular Blogpost: ', popularBlogPost);
+
   if (isNewUser) {
     return (
       <View style={GlobalStyle.backgroundContainerCentered}>
@@ -161,7 +168,7 @@ const Dashboard = ({route, navigation}) => {
     );
   }
 
-  if (loading) {
+  if (loading||loading2||loading3) {
     return (
       <View>
         <Text>Loading boss!!</Text>
@@ -169,7 +176,7 @@ const Dashboard = ({route, navigation}) => {
     );
   }
   return (
-    <View style={GlobalStyle.backgroundContainerCentered}>
+    <View style={GlobalStyle.backgroundContainerInset}>
       {/* ROOT CONTAINER //////////////////////////////////*/}
       <ScrollView>
         <View style={styles.headerContainer}>
@@ -177,14 +184,14 @@ const Dashboard = ({route, navigation}) => {
           <Text style={GlobalStyle.textLargeSubTitle}>WHAT'S NEW TODAY</Text>
         </View>
         <ScrollView horizontal={true}>
-          <View style={[styles.blogpostHeroContainer,{flexDirection: 'row',}]}>
+          <View style={[styles.blogpostHeroContainer, {flexDirection: 'row'}]}>
             {latestBlogPost.map((e, i) => (
               <View key={i}>
                 <BlogPostHero
                   title={e.postTitle}
                   author={e.creatorName}
                   atName={e.creatorAtName}
-                  bg={e.postImageURI}
+                  bg={e.postStorageURL}
                   ava={e.creatorAvatarURI}
                 />
               </View>
@@ -201,7 +208,7 @@ const Dashboard = ({route, navigation}) => {
                 title={e.postTitle}
                 author={e.creatorName}
                 atName={e.creatorAtName}
-                bg={e.postImageURI}
+                bg={e.postStorageURL}
                 ava={e.creatorAvatarURI}
               />
             </View>

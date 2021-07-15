@@ -58,7 +58,7 @@ const Profile = ({navigation}) => {
           <Button
             text={'Log me Out!'}
             onPress={() => handleLogout()}
-            color={'grey'}
+            color={'tomato'}
           />
         </View>
       </View>
