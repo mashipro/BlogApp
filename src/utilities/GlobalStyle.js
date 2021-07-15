@@ -64,7 +64,8 @@ export default StyleSheet.create({
   blogpostHeroContainer: {
     backgroundColor: 'red',
     height: 350,
-    marginVertical: 4,
+    width:350,
+    margin: 4,
   },
   blogpostHeroImage: {
     height: '100%',

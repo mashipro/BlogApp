@@ -169,14 +169,15 @@ const Dashboard = ({route, navigation}) => {
     );
   }
   return (
-    <View style={GlobalStyle.backgroundContainerNoPadding}>
+    <View style={GlobalStyle.backgroundContainerCentered}>
       {/* ROOT CONTAINER //////////////////////////////////*/}
       <ScrollView>
         <View style={styles.headerContainer}>
           <Text style={GlobalStyle.textHeroTitle}>DISCOVER//</Text>
           <Text style={GlobalStyle.textLargeSubTitle}>WHAT'S NEW TODAY</Text>
         </View>
-          <View style={styles.blogpostHeroContainer}>
+        <ScrollView horizontal={true}>
+          <View style={[styles.blogpostHeroContainer,{flexDirection: 'row',}]}>
             {latestBlogPost.map((e, i) => (
               <View key={i}>
                 <BlogPostHero
@@ -189,6 +190,7 @@ const Dashboard = ({route, navigation}) => {
               </View>
             ))}
           </View>
+        </ScrollView>
         <View style={styles.headerContainer}>
           <Text style={GlobalStyle.textLargeSubTitle}>Popular Posts OwO</Text>
         </View>
