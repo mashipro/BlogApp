@@ -1,5 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import {useEffect} from 'react';
+import {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 //React Navigator
@@ -22,9 +24,10 @@ import NewPosts from './src/views/NewPosts';
 import Options from './src/views/Options';
 import SplashScreen from './src/views/SplashScreen';
 import Profile from './src/views/Profile';
-import {useEffect} from 'react';
-import {useState} from 'react';
+
 import Icon from 'react-native-vector-icons/Ionicons';
+import AxiosTest from './src/views/AxiosTest';
+import AxiosTestPost from './src/views/AxiosTestPost';
 
 //ROUTING NAVIGATION ///////////////////////////////////////////////////////////////////////////
 const App = () => {
@@ -53,6 +56,11 @@ const App = () => {
       <>
         <Tabs.Navigator
           initialRouteName="Dashboard"
+          tabBarOptions={{
+            labelStyle: {fontSize: 14},
+            activeTintColor: 'black',
+            activeBackgroundColor: 'gold',
+          }}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
               let icons;
@@ -112,6 +120,21 @@ const App = () => {
               name="Dashboard"
               component={dashboardRoute}
               options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Options"
+              component={Options}
+              options={{headerShown: true}}
+            />
+            <Stack.Screen
+              name="AxiosTest"
+              component={AxiosTest}
+              options={{headerShown: true}}
+            />
+            <Stack.Screen
+              name="AxiosTestPost"
+              component={AxiosTestPost}
+              options={{headerShown: true}}
             />
           </>
         )}

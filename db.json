@@ -1,0 +1,32 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "description": "typicode",
+      "content": "ahuehuehuehuehue"
+    },
+    {
+      "title": "whaay",
+      "description": "fuckoff",
+      "content": "and what",
+      "id": 2
+    },
+    {
+      "title": "asd",
+      "description": "afggawg agdsgad gadga ga",
+      "content": "gwwgwwggwwg",
+      "id": 3
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}

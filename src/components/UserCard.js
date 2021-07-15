@@ -47,7 +47,7 @@ const UserCard = ({
         <Button
           text={'Subscribe'}
           // onPress={() => handleGoToRegister()}
-          color={'skyblue'}
+          color={'gold'}
         />
       )}
     </View>

@@ -19,7 +19,7 @@ const Dashboard = ({route, navigation}) => {
   const [isNewUser, setIsNewUser] = useState(false);
   const [userData, setUserData] = useState('');
   const [latestBlogPost, setLatestBlogPost] = useState([]);
-  const [newBlogPost, setNewBlogPost] = useState([]);
+  const [popularBlogPost, setPopularBlogPost] = useState([]);
 
   const [userName, setUserName] = useState('');
   const [userAvatarURI, setUserAvatarURI] = useState('');
@@ -42,15 +42,23 @@ const Dashboard = ({route, navigation}) => {
               AsyncStorage.setItem(
                 'userData',
                 JSON.stringify(documentSnapshot.data()),
-                setLoading(false)
+                setLoading(false),
               ));
         });
-      const subscriber2 = firestore()
+
+      // Stop listening for updates when no longer required
+      return () => {
+        subscriber();
+        console.log(subscriber());
+      };
+    }, []);
+    useEffect(() => {
+      const subscriber = firestore()
         .collection('BlogData')
         .doc('BlogPost')
         .collection('BlogPostData')
         .orderBy('postCreated', 'desc')
-        .limit(20)
+        .limit(10)
         .onSnapshot(docs => {
           // console.log(TAG, 'document: ', docs);
           let newPostArray = [];
@@ -63,12 +71,31 @@ const Dashboard = ({route, navigation}) => {
           setLatestBlogPost(newPostArray);
           // setLoading(false);
         });
-
-      // Stop listening for updates when no longer required
       return () => {
         subscriber();
-        subscriber2();
-        console.log(subscriber(), subscriber2());
+      };
+    }, []);
+    useEffect(() => {
+      const subscriber = firestore()
+        .collection('BlogData')
+        .doc('BlogPost')
+        .collection('BlogPostData')
+        .orderBy('postViews', 'desc')
+        .limit(20)
+        .onSnapshot(docs => {
+          // console.log(TAG, 'document: ', docs);
+          let newPostArray = [];
+          docs.forEach(async documentSnapshot => {
+            // console.log(TAG, 'document: ', documentSnapshot.data());
+            let blogPostData = documentSnapshot.data();
+            blogPostData.postID = documentSnapshot.id;
+            newPostArray.push(blogPostData);
+          });
+          setPopularBlogPost(newPostArray);
+          // setLoading(false);
+        });
+      return () => {
+        subscriber();
       };
     }, []);
   }
@@ -98,6 +125,7 @@ const Dashboard = ({route, navigation}) => {
   // setUserData(getUserData(userAuthData.uid))
   console.log(TAG, 'is new user: ', isNewUser);
   console.log(TAG, 'latest Blogpost: ', latestBlogPost);
+  console.log(TAG, 'popular Blogpost: ', popularBlogPost);
   if (isNewUser) {
     return (
       <View style={GlobalStyle.backgroundContainerCentered}>
@@ -148,18 +176,34 @@ const Dashboard = ({route, navigation}) => {
           <Text style={GlobalStyle.textHeroTitle}>DISCOVER//</Text>
           <Text style={GlobalStyle.textLargeSubTitle}>WHAT'S NEW TODAY</Text>
         </View>
-        <View style={styles.blogpostHeroContainer}>
-          {latestBlogPost.map((e, i) => (
-            <View key={i}>
-              <BlogPostHero title={e.postTitle} author={e.creatorName} atName={e.creatorAtName} bg={e.postImageURI} ava={e.creatorAvatarURI}/>
-            </View>
-          ))}
-        </View>
+          <View style={styles.blogpostHeroContainer}>
+            {latestBlogPost.map((e, i) => (
+              <View key={i}>
+                <BlogPostHero
+                  title={e.postTitle}
+                  author={e.creatorName}
+                  atName={e.creatorAtName}
+                  bg={e.postImageURI}
+                  ava={e.creatorAvatarURI}
+                />
+              </View>
+            ))}
+          </View>
         <View style={styles.headerContainer}>
           <Text style={GlobalStyle.textLargeSubTitle}>Popular Posts OwO</Text>
         </View>
         <View>
-          <BlogPostHero />
+          {popularBlogPost.map((e, i) => (
+            <View key={i}>
+              <BlogPostHero
+                title={e.postTitle}
+                author={e.creatorName}
+                atName={e.creatorAtName}
+                bg={e.postImageURI}
+                ava={e.creatorAvatarURI}
+              />
+            </View>
+          ))}
         </View>
       </ScrollView>
     </View>

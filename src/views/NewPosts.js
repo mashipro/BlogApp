@@ -94,7 +94,7 @@ const NewPosts = ({route, navigation}) => {
           <Button
             text={'Submit Post'}
             onPress={() => handleSubmitPosts()}
-            color={'skyblue'}
+            color={'gold'}
           />
         </View>
       </View>

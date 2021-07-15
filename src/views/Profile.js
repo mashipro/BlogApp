@@ -9,11 +9,15 @@ import GlobalStyle from '../utilities/GlobalStyle';
 import {logoutUser} from '../utilities/UserManager';
 import UserCard from './../components/UserCard';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   const TAG = 'Profile// ';
 
   function handleLogout() {
     logoutUser();
+  }
+
+  function handleAxi() {
+    navigation.push('AxiosTestPost');
   }
   const [userCompleteData, setUserCompleteData] = useState({});
 
@@ -33,7 +37,7 @@ const Profile = () => {
         style={{
           height: '100%',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
         }}>
         <View>
           <Text style={GlobalStyle.textHeroTitle}>IDENTITY#</Text>
@@ -46,10 +50,15 @@ const Profile = () => {
           />
         </View>
         <View>
+        <Button
+            text={'Go to axiTestMode'}
+            onPress={() => handleAxi()}
+            color={'grey'}
+          />
           <Button
             text={'Log me Out!'}
             onPress={() => handleLogout()}
-            color={'red'}
+            color={'grey'}
           />
         </View>
       </View>
