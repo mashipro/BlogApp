@@ -6,7 +6,7 @@ import Button from '../components/Button';
 import GlobalStyle from '../utilities/GlobalStyle';
 import axios from 'axios';
 
-const AxiosTest = () => {
+const AxiosTest = ({navigation}) => {
   const TAG = 'AxiosTest// ';
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -24,23 +24,6 @@ const AxiosTest = () => {
     }
   };
 
-  
-
-  let deleteDataAx = async dataID => {
-    try {
-      await axios.delete(uriGett + dataID).then(res => console.log(res));
-    } catch (e) {
-      console.log(TAG, ' error: ', e);
-    }
-  };
-
-  let putDataAx = async (dataID, data) => {
-    try {
-      await axios.put(uriGett + dataID, data).then(res => console.log(res));
-    } catch (e) {
-      console.log(TAG, ' error: ', e);
-    }
-  };
   let patchDataAx = async (dataID, data) => {
     try {
       await axios.patch(uriGett + dataID, data).then(res => console.log(res));
@@ -60,6 +43,7 @@ const AxiosTest = () => {
       setTitle('');
       setDescription('');
       setContent('');
+      navigation.goBack();
     } else {
       console.log(TAG, 'error, some field are empty');
     }

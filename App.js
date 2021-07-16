@@ -28,6 +28,7 @@ import Profile from './src/views/Profile';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AxiosTest from './src/views/AxiosTest';
 import AxiosTestPost from './src/views/AxiosTestPost';
+import AxiosTestPostDetails from './src/views/AxiosTestPostDetails';
 
 //ROUTING NAVIGATION ///////////////////////////////////////////////////////////////////////////
 const App = () => {
@@ -136,6 +137,11 @@ const App = () => {
             <Stack.Screen
               name="AxiosTestPost"
               component={AxiosTestPost}
+              options={{headerShown: true}}
+            />
+            <Stack.Screen
+              name="AxiosTestPostDetails"
+              component={AxiosTestPostDetails}
               options={{headerShown: true}}
             />
           </>

@@ -176,7 +176,7 @@ const Dashboard = ({route, navigation}) => {
     );
   }
   return (
-    <View style={GlobalStyle.backgroundContainerInset}>
+    <View style={GlobalStyle.backgroundContainerCentered}>
       {/* ROOT CONTAINER //////////////////////////////////*/}
       <ScrollView>
         <View style={styles.headerContainer}>
