@@ -16,6 +16,10 @@ const Drawer = createDrawerNavigator();
 //Import Firebase
 import auth from '@react-native-firebase/auth';
 
+//Import Redux
+import {Provider} from 'react-redux';
+import store from './src/redux/store'
+
 //ImportView
 import SignIn from './src/views/SignIn';
 import SignUp from './src/views/SignUp';
@@ -30,8 +34,13 @@ import AxiosTest from './src/views/AxiosTest';
 import AxiosTestPost from './src/views/AxiosTestPost';
 import AxiosTestPostDetails from './src/views/AxiosTestPostDetails';
 
+const initialState = {
+  totalClicks: 0,
+  userTest: 'Johann',
+};
+
 //ROUTING NAVIGATION ///////////////////////////////////////////////////////////////////////////
-const App = () => {
+const Apps = () => {
   const TAG = 'App// ';
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
@@ -62,7 +71,7 @@ const App = () => {
             activeTintColor: 'black',
             activeBackgroundColor: 'gold',
             keyboardHidesTabBar: 'true',
-            showLabel: false
+            showLabel: false,
           }}
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, color, size}) => {
@@ -151,6 +160,12 @@ const App = () => {
   );
 };
 
-export default App;
+export default App = () => {
+  return (
+    <Provider store={store}>
+      <Apps />
+    </Provider>
+  );
+};
 
 const styles = StyleSheet.create({});

@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
@@ -10,9 +17,15 @@ import {getUserData, setUserDataFirestore} from '../utilities/UserManager';
 import EditText from '../components/EditText';
 import Button from './../components/Button';
 import {getUserNameByUID} from './../utilities/UserManager';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {addClicks, changeClickerName} from '../redux/action/ClickerActions';
 
-const Dashboard = ({route, navigation}) => {
-  const TAG = 'Dashboard// ';
+const TAG = 'Dashboard// ';
+const Dashboard = props => {
+  // const Dashboard = ({route, navigation}) => {
+
+  const route = props.route;
+  const navigation = props.navigation;
   // console.log(TAG, 'props data: ', route);
   const userAuthData = route.params;
 
@@ -64,15 +77,17 @@ const Dashboard = ({route, navigation}) => {
         .limit(10)
         .onSnapshot(async docs => {
           let newPostArray = [];
-          for(const doc of docs.docs){
+          for (const doc of docs.docs) {
             let blogPostData = doc.data();
             blogPostData.postID = doc.id;
-            const url = await storage().ref(blogPostData.postImageURI).getDownloadURL();
-            blogPostData.postStorageURL = url
+            const url = await storage()
+              .ref(blogPostData.postImageURI)
+              .getDownloadURL();
+            blogPostData.postStorageURL = url;
             newPostArray.push(blogPostData);
           }
           setLatestBlogPost(newPostArray);
-          setLoading2(false)
+          setLoading2(false);
         });
       return () => {
         subscriber();
@@ -89,21 +104,26 @@ const Dashboard = ({route, navigation}) => {
         .onSnapshot(async docs => {
           // console.log(TAG, 'document: ', docs);
           let newPostArray = [];
-          for(const doc of docs.docs){
+          for (const doc of docs.docs) {
             let blogPostData = doc.data();
             blogPostData.postID = doc.id;
-            const url = await storage().ref(blogPostData.postImageURI).getDownloadURL();
-            blogPostData.postStorageURL = url
+            const url = await storage()
+              .ref(blogPostData.postImageURI)
+              .getDownloadURL();
+            blogPostData.postStorageURL = url;
             newPostArray.push(blogPostData);
           }
           setPopularBlogPost(newPostArray);
-          setLoading3(false)
-
+          setLoading3(false);
         });
       return () => {
         subscriber();
       };
     }, []);
+
+    // useEffect(() => {
+    //   console.log(TAG, 'clicks total: ',props.clicks);
+    // }, [props.clicks])
   }
 
   function handleSubmit() {
@@ -126,6 +146,14 @@ const Dashboard = ({route, navigation}) => {
       console.log(TAG, 'submit error field incomplete');
     }
   }
+
+  const dispatch = useDispatch();
+  const clickRed = useSelector(state => state.clickRed)
+  
+  const handleDiscoverPress = () => {
+    dispatch(addClicks());
+    // console.log(dispatch);
+  };
 
   getUserData(userAuthData.uid);
   // setUserData(getUserData(userAuthData.uid))
@@ -168,7 +196,7 @@ const Dashboard = ({route, navigation}) => {
     );
   }
 
-  if (loading||loading2||loading3) {
+  if (loading || loading2 || loading3) {
     return (
       <View>
         <Text>Loading boss!!</Text>
@@ -180,8 +208,12 @@ const Dashboard = ({route, navigation}) => {
       {/* ROOT CONTAINER //////////////////////////////////*/}
       <ScrollView>
         <View style={styles.headerContainer}>
-          <Text style={GlobalStyle.textHeroTitle}>DISCOVER//</Text>
-          <Text style={GlobalStyle.textLargeSubTitle}>WHAT'S NEW TODAY</Text>
+          <TouchableOpacity onPress={() => handleDiscoverPress()}>
+            <Text style={GlobalStyle.textHeroTitle}>DISCOVER//</Text>
+          </TouchableOpacity>
+          <Text style={GlobalStyle.textLargeSubTitle}>
+            WHAT'S NEW TODAY {clickRed.totalClicks}
+          </Text>
         </View>
         <ScrollView horizontal={true}>
           <View style={[styles.blogpostHeroContainer, {flexDirection: 'row'}]}>
